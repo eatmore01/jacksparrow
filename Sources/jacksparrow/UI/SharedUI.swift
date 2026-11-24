@@ -27,6 +27,58 @@ struct MenuCaption: View {
     }
 }
 
+struct PointingHandArea: NSViewRepresentable {
+    final class TrackingView: NSView {
+        override func updateTrackingAreas() {
+            super.updateTrackingAreas()
+            for area in trackingAreas {
+                removeTrackingArea(area)
+            }
+            addTrackingArea(NSTrackingArea(
+                rect: .zero,
+                options: [.cursorUpdate, .mouseEnteredAndExited, .activeAlways, .inVisibleRect],
+                owner: self
+            ))
+        }
+
+        override func cursorUpdate(with event: NSEvent) {
+            NSCursor.pointingHand.set()
+        }
+
+        override func mouseEntered(with event: NSEvent) {
+            NSCursor.pointingHand.set()
+        }
+
+        override func mouseExited(with event: NSEvent) {
+            NSCursor.arrow.set()
+        }
+
+        override func hitTest(_ point: NSPoint) -> NSView? { nil }
+    }
+
+    func makeNSView(context: Context) -> TrackingView { TrackingView() }
+
+    func updateNSView(_ nsView: TrackingView, context: Context) {}
+}
+
+struct PointingHand: ViewModifier {
+    let isActive: Bool
+
+    func body(content: Content) -> some View {
+        content.overlay {
+            if isActive {
+                PointingHandArea()
+            }
+        }
+    }
+}
+
+extension View {
+    func pointingHand(_ isActive: Bool = true) -> some View {
+        modifier(PointingHand(isActive: isActive))
+    }
+}
+
 struct MenuStatusLine: View {
     let text: String
     let tint: Color
@@ -99,6 +151,7 @@ struct MenuItemRow: View {
         .buttonStyle(.plain)
         .padding(.horizontal, MenuTheme.outerInset)
         .onHover { hovering = $0 }
+        .pointingHand()
         .accessibilityLabel(title)
         .accessibilityValue(isChecked ? "on" : "off")
         .accessibilityAddTraits(isChecked ? [.isSelected] : [])

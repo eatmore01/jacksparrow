@@ -56,6 +56,7 @@ private struct SelectorButton<Content: View>: View {
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
+        .pointingHand()
         .help(tooltip)
         .accessibilityLabel(tooltip)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])

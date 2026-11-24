@@ -18,8 +18,10 @@ cp "$ROOT/Resources/TimerIcon.png" "$BUNDLE/Contents/Resources/TimerIcon.png"
 cp "$ROOT/Resources/ShlikerIcon.png" "$BUNDLE/Contents/Resources/ShlikerIcon.png"
 printf 'APPL????' > "$BUNDLE/Contents/PkgInfo"
 
-codesign --force --sign - --timestamp=none "$BUNDLE" >/dev/null 2>&1
+codesign --force --sign - --identifier "local.jacksparrow" --timestamp=none \
+  -r='designated => identifier "local.jacksparrow"' "$BUNDLE" >/dev/null 2>&1
 
 plutil -lint "$BUNDLE/Contents/Info.plist"
 codesign --verify --verbose=1 "$BUNDLE"
+codesign -d -r- "$BUNDLE" 2>&1 | tail -1
 print "built: $BUNDLE"

@@ -60,6 +60,7 @@ struct AddTimerView: View {
         .onTapGesture { toggle() }
         .padding(.horizontal, MenuTheme.outerInset)
         .onHover { hovering = $0 }
+        .pointingHand()
         .accessibilityLabel("New timer")
         .accessibilityValue(expanded ? "expanded" : "collapsed")
     }
@@ -156,6 +157,7 @@ private struct AddButton: View {
         .buttonStyle(.plain)
         .disabled(!isEnabled)
         .onHover { hovering = $0 }
+        .pointingHand(isEnabled)
     }
 
     private var background: Color {
