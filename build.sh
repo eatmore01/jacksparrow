@@ -16,6 +16,7 @@ cp "$ROOT/Resources/AppIcon.icns" "$BUNDLE/Contents/Resources/AppIcon.icns"
 cp "$ROOT/Resources/StatusIcon.png" "$BUNDLE/Contents/Resources/StatusIcon.png"
 cp "$ROOT/Resources/TimerIcon.png" "$BUNDLE/Contents/Resources/TimerIcon.png"
 cp "$ROOT/Resources/ShlikerIcon.png" "$BUNDLE/Contents/Resources/ShlikerIcon.png"
+cp "$ROOT/Resources/AlertSound.mp3" "$BUNDLE/Contents/Resources/AlertSound.mp3"
 printf 'APPL????' > "$BUNDLE/Contents/PkgInfo"
 
 codesign --force --sign - --identifier "local.jacksparrow" --timestamp=none \

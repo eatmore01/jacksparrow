@@ -3,6 +3,8 @@ import TimerCore
 
 @MainActor
 final class TimerStore: ObservableObject {
+    var onTimerFinished: ((TimerItem) -> Void)?
+
     @Published private(set) var items: [TimerItem] = []
     @Published private(set) var now: Date = .now
 
@@ -32,8 +34,15 @@ final class TimerStore: ObservableObject {
     func primaryAction(_ id: UUID) {
         guard let index = items.firstIndex(where: { $0.id == id }) else { return }
         now = .now
+        let wasFinished = items[index].state == .finished
         items[index].primaryAction(now: now)
+        notifyIfJustFinished(at: index, wasFinished: wasFinished)
         syncTicker()
+    }
+
+    private func notifyIfJustFinished(at index: Int, wasFinished: Bool) {
+        guard !wasFinished, items[index].state == .finished else { return }
+        onTimerFinished?(items[index])
     }
 
     var menuBarTitle: String? {
@@ -68,7 +77,9 @@ final class TimerStore: ObservableObject {
         let instant = Date.now
         now = instant
         for index in items.indices {
+            let wasFinished = items[index].state == .finished
             items[index].tick(now: instant)
+            notifyIfJustFinished(at: index, wasFinished: wasFinished)
         }
         if !items.contains(where: \.isRunning) {
             tickTask?.cancel()

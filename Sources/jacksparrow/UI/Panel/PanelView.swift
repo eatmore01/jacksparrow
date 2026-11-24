@@ -43,7 +43,7 @@ struct PanelView: View {
         case .util(.keyboardRemap):
             KeyboardSection(service: runtime.keyboard)
         case .util(.timers):
-            TimersSection(store: runtime.timers)
+            TimersSection(store: runtime.timers, chime: runtime.chime)
         case .util(.scrollInvert):
             ShlikerSection(service: runtime.scroll)
         case .settings:

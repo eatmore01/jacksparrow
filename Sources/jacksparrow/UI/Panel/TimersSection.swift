@@ -3,6 +3,7 @@ import TimerCore
 
 struct TimersSection: View {
     @ObservedObject var store: TimerStore
+    @ObservedObject var chime: ChimeService
 
     private var activeSummary: String {
         let running = store.items.filter(\.isRunning).count
@@ -33,6 +34,10 @@ struct TimersSection: View {
                 store.add(title: title, hours: hours, minutes: minutes)
             }
             .padding(.bottom, 2)
+
+            MenuDivider()
+
+            SoundSettingsView(chime: chime)
         }
     }
 }

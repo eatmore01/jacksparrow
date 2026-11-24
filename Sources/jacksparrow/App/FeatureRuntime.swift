@@ -5,7 +5,13 @@ final class FeatureRuntime: ObservableObject {
     @Published private(set) var available: Set<UtilFeature> = Set(UtilFeature.availableCases)
 
     private(set) lazy var keyboard = KeyboardService()
-    private(set) lazy var timers = TimerStore()
+    private(set) lazy var chime = ChimeService()
+
+    private(set) lazy var timers: TimerStore = {
+        let store = TimerStore()
+        store.onTimerFinished = { [weak self] _ in self?.chime.play() }
+        return store
+    }()
     private(set) lazy var scroll = ScrollService()
 
     private lazy var bindings: [UtilFeature: () -> Void] = [
