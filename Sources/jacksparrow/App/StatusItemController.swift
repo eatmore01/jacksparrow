@@ -9,6 +9,15 @@ final class StatusItemController: NSObject {
 
     var button: NSStatusBarButton? { statusItem.button }
 
+    private var barLine: String = ""
+
+    func setBarLine(_ line: String) {
+        let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed != barLine else { return }
+        barLine = trimmed
+        updateIconAppearance()
+    }
+
     private lazy var brandImage: NSImage? = {
         guard let url = Bundle.main.url(forResource: "StatusIcon", withExtension: "png"),
               let image = NSImage(contentsOf: url), image.size.height > 0 else { return nil }
@@ -37,8 +46,8 @@ final class StatusItemController: NSObject {
         if let brand = brandImage {
             brand.accessibilityDescription = "jacksparrow"
             button.image = brand
-            button.title = ""
-            button.imagePosition = .imageOnly
+            button.title = barLine.isEmpty ? "" : " \(barLine)"
+            button.imagePosition = barLine.isEmpty ? .imageOnly : .imageLeading
         } else if let symbol = NSImage(systemSymbolName: "circle.grid.2x2", accessibilityDescription: "jacksparrow") {
             symbol.isTemplate = true
             button.image = symbol

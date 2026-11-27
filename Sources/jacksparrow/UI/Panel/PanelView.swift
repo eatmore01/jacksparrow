@@ -46,6 +46,8 @@ struct PanelView: View {
             TimersSection(store: runtime.timers, chime: runtime.chime)
         case .util(.scrollInvert):
             ShlikerSection(service: runtime.scroll)
+        case .util(.notes):
+            NotesSection(service: runtime.notes)
         case .settings:
             SettingsSection(runtime: runtime)
         }

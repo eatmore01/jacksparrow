@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 
 @MainActor
@@ -7,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private let statusController = StatusItemController()
     private let popover = NSPopover()
     private var lastCloseDate = Date.distantPast
+    private var cancellables: Set<AnyCancellable> = []
     private let reopenGuard: TimeInterval = 0.2
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -15,6 +17,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         statusController.onLeftClick = { [weak self] in self?.togglePopover() }
         statusController.onRightClick = { [weak self] _ in self?.togglePopover() }
         statusController.install()
+
+        runtime.$barLine
+            .removeDuplicates()
+            .sink { [weak self] line in self?.statusController.setBarLine(line) }
+            .store(in: &cancellables)
 
         runtime.start()
         warmUpPanel()
@@ -49,5 +56,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
 
     func popoverDidClose(_ notification: Notification) {
         lastCloseDate = Date()
+        runtime.flushPendingWork()
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        runtime.flushPendingWork()
     }
 }
