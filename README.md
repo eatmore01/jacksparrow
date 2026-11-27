@@ -5,3 +5,4 @@
 - [win-mac external keyboard fix](./assets/kb.png)
 - [scroll revers](./assets/shliker.png)
 - [timer](./assets/timer.png)
+- [bar notes](./assets/gratte.png)
